@@ -57,6 +57,15 @@ public class TCPClient {
     public synchronized void disconnect() {
         // TODO Step 4: implement this method
         // Hint: remember to check if connection is active
+        if(isConnectionActive() == true){
+            try{
+                connection.close();
+                connection = null;
+
+            }catch (IOException e){
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
     }
 
     /**
@@ -265,6 +274,9 @@ public class TCPClient {
         private void onDisconnect() {
             // TODO Step 4: Implement this method
             // Hint: all the onXXX() methods will be similar to onLoginResult()
+            for(ChatListener l : listeners){
+                l.onDisconnect();
+            }
         }
 
         /**
@@ -274,6 +286,9 @@ public class TCPClient {
          */
         private void onUsersList(String[] users) {
             // TODO Step 5: Implement this method
+            for(ChatListener l : listeners){
+                l.onUserList(users);
+            }
         }
 
         /**
