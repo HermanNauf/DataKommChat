@@ -95,15 +95,15 @@ public class TCPClient {
         // TODO Step 2: implement this method
         // Hint: Reuse sendCommand() method
         // Hint: update lastError if you want to store the reason for the error.
-        if (sendCommand("msg ")){
+        if (sendCommand("msg ")) {
             toServer.println(message);
             System.out.println("Message was sent successfully");
             return true;
-        }
-        else{
+        } else {
             System.out.println("Message was not sent");
             return false;
         }
+    }
 
         /**
          * Send a login request to the chat server.
