@@ -113,6 +113,13 @@ public class TCPClient {
         public void tryLogin(String username) {
             // TODO Step 3: implement this method
             // Hint: Reuse sendCommand() method
+            if(sendCommand("login ")){
+                toServer.println(username);
+                System.out.println("Username was sent to the server");
+            }
+            else{
+                System.out.println("The username was not sent");
+            }
         }
 
         /**
