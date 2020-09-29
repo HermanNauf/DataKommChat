@@ -1,5 +1,7 @@
 package no.ntnu.datakomm.chat;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import java.io.*;
 import java.net.*;
 import java.util.LinkedList;
@@ -26,7 +28,21 @@ public class TCPClient {
         // TODO Step 1: implement this method
         // Hint: Remember to process all exceptions and return false on error
         // Hint: Remember to set up all the necessary input/output stream variables
-        return false;
+        System.out.println("Client started...");
+
+        try{
+            connection = new Socket(host, port);
+            OutputStream out = connection.getOutputStream();
+            toServer = new PrintWriter(out,true);
+            InputStream in = connection.getInputStream();
+            fromServer = new BufferedReader(new InputStreamReader(in));
+            System.out.println("Successfully connected!");
+            return true;
+        }catch (IOException e){
+            System.out.println("Socket error: " + e.getMessage());
+            return false;
+        }
+
     }
 
     /**
@@ -59,7 +75,14 @@ public class TCPClient {
     private boolean sendCommand(String cmd) {
         // TODO Step 2: Implement this method
         // Hint: Remember to check if connection is active
-        return false;
+        if(isConnectionActive()) {
+            toServer.print(cmd);
+            return true;
+        }
+        else {
+            System.out.println("Socket is closed");
+            return false;
+        }
     }
 
     /**
@@ -72,209 +95,216 @@ public class TCPClient {
         // TODO Step 2: implement this method
         // Hint: Reuse sendCommand() method
         // Hint: update lastError if you want to store the reason for the error.
-        return false;
-    }
-
-    /**
-     * Send a login request to the chat server.
-     *
-     * @param username Username to use
-     */
-    public void tryLogin(String username) {
-        // TODO Step 3: implement this method
-        // Hint: Reuse sendCommand() method
-    }
-
-    /**
-     * Send a request for latest user list to the server. To get the new users,
-     * clear your current user list and use events in the listener.
-     */
-    public void refreshUserList() {
-        // TODO Step 5: implement this method
-        // Hint: Use Wireshark and the provided chat client reference app to find out what commands the
-        // client and server exchange for user listing.
-    }
-
-    /**
-     * Send a private message to a single recipient.
-     *
-     * @param recipient username of the chat user who should receive the message
-     * @param message   Message to send
-     * @return true if message sent, false on error
-     */
-    public boolean sendPrivateMessage(String recipient, String message) {
-        // TODO Step 6: Implement this method
-        // Hint: Reuse sendCommand() method
-        // Hint: update lastError if you want to store the reason for the error.
-        return false;
-    }
-
-
-    /**
-     * Send a request for the list of commands that server supports.
-     */
-    public void askSupportedCommands() {
-        // TODO Step 8: Implement this method
-        // Hint: Reuse sendCommand() method
-    }
-
-
-    /**
-     * Wait for chat server's response
-     *
-     * @return one line of text (one command) received from the server
-     */
-    private String waitServerResponse() {
-        // TODO Step 3: Implement this method
-        // TODO Step 4: If you get I/O Exception or null from the stream, it means that something has gone wrong
-        // with the stream and hence the socket. Probably a good idea to close the socket in that case.
-
-        return null;
-    }
-
-    /**
-     * Get the last error message
-     *
-     * @return Error message or "" if there has been no error
-     */
-    public String getLastError() {
-        if (lastError != null) {
-            return lastError;
-        } else {
-            return "";
+        if (sendCommand("msg ")){
+            toServer.println(message);
+            System.out.println("Message was sent successfully");
+            return true;
         }
-    }
+        else{
+            System.out.println("Message was not sent");
+            return false;
+        }
 
-    /**
-     * Start listening for incoming commands from the server in a new CPU thread.
-     */
-    public void startListenThread() {
-        // Call parseIncomingCommands() in the new thread.
-        Thread t = new Thread(() -> {
-            parseIncomingCommands();
-        });
-        t.start();
-    }
+        /**
+         * Send a login request to the chat server.
+         *
+         * @param username Username to use
+         */
+        public void tryLogin(String username) {
+            // TODO Step 3: implement this method
+            // Hint: Reuse sendCommand() method
+        }
 
-    /**
-     * Read incoming messages one by one, generate events for the listeners. A loop that runs until
-     * the connection is closed.
-     */
-    private void parseIncomingCommands() {
-        while (isConnectionActive()) {
+        /**
+         * Send a request for latest user list to the server. To get the new users,
+         * clear your current user list and use events in the listener.
+         */
+        public void refreshUserList() {
+            // TODO Step 5: implement this method
+            // Hint: Use Wireshark and the provided chat client reference app to find out what commands the
+            // client and server exchange for user listing.
+        }
+
+        /**
+         * Send a private message to a single recipient.
+         *
+         * @param recipient username of the chat user who should receive the message
+         * @param message   Message to send
+         * @return true if message sent, false on error
+         */
+        public boolean sendPrivateMessage(String recipient, String message) {
+            // TODO Step 6: Implement this method
+            // Hint: Reuse sendCommand() method
+            // Hint: update lastError if you want to store the reason for the error.
+            return false;
+        }
+
+
+        /**
+         * Send a request for the list of commands that server supports.
+         */
+        public void askSupportedCommands() {
+            // TODO Step 8: Implement this method
+            // Hint: Reuse sendCommand() method
+        }
+
+
+        /**
+         * Wait for chat server's response
+         *
+         * @return one line of text (one command) received from the server
+         */
+        private String waitServerResponse() {
             // TODO Step 3: Implement this method
-            // Hint: Reuse waitServerResponse() method
-            // Hint: Have a switch-case (or other way) to check what type of response is received from the server
-            // and act on it.
-            // Hint: In Step 3 you need to handle only login-related responses.
-            // Hint: In Step 3 reuse onLoginResult() method
+            // TODO Step 4: If you get I/O Exception or null from the stream, it means that something has gone wrong
+            // with the stream and hence the socket. Probably a good idea to close the socket in that case.
 
-            // TODO Step 5: update this method, handle user-list response from the server
-            // Hint: In Step 5 reuse onUserList() method
+            return null;
+        }
 
-            // TODO Step 7: add support for incoming chat messages from other users (types: msg, privmsg)
-            // TODO Step 7: add support for incoming message errors (type: msgerr)
-            // TODO Step 7: add support for incoming command errors (type: cmderr)
-            // Hint for Step 7: call corresponding onXXX() methods which will notify all the listeners
+        /**
+         * Get the last error message
+         *
+         * @return Error message or "" if there has been no error
+         */
+        public String getLastError() {
+            if (lastError != null) {
+                return lastError;
+            } else {
+                return "";
+            }
+        }
 
-            // TODO Step 8: add support for incoming supported command list (type: supported)
+        /**
+         * Start listening for incoming commands from the server in a new CPU thread.
+         */
+        public void startListenThread() {
+            // Call parseIncomingCommands() in the new thread.
+            Thread t = new Thread(() -> {
+                parseIncomingCommands();
+            });
+            t.start();
+        }
 
+        /**
+         * Read incoming messages one by one, generate events for the listeners. A loop that runs until
+         * the connection is closed.
+         */
+        private void parseIncomingCommands() {
+            while (isConnectionActive()) {
+                // TODO Step 3: Implement this method
+                // Hint: Reuse waitServerResponse() method
+                // Hint: Have a switch-case (or other way) to check what type of response is received from the server
+                // and act on it.
+                // Hint: In Step 3 you need to handle only login-related responses.
+                // Hint: In Step 3 reuse onLoginResult() method
+
+                // TODO Step 5: update this method, handle user-list response from the server
+                // Hint: In Step 5 reuse onUserList() method
+
+                // TODO Step 7: add support for incoming chat messages from other users (types: msg, privmsg)
+                // TODO Step 7: add support for incoming message errors (type: msgerr)
+                // TODO Step 7: add support for incoming command errors (type: cmderr)
+                // Hint for Step 7: call corresponding onXXX() methods which will notify all the listeners
+
+                // TODO Step 8: add support for incoming supported command list (type: supported)
+
+            }
+        }
+
+        /**
+         * Register a new listener for events (login result, incoming message, etc)
+         *
+         * @param listener
+         */
+        public void addListener(ChatListener listener) {
+            if (!listeners.contains(listener)) {
+                listeners.add(listener);
+            }
+        }
+
+        /**
+         * Unregister an event listener
+         *
+         * @param listener
+         */
+        public void removeListener(ChatListener listener) {
+            listeners.remove(listener);
+        }
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // The following methods are all event-notificators - notify all the listeners about a specific event.
+        // By "event" here we mean "information received from the chat server".
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Notify listeners that login operation is complete (either with success or
+         * failure)
+         *
+         * @param success When true, login successful. When false, it failed
+         * @param errMsg  Error message if any
+         */
+        private void onLoginResult(boolean success, String errMsg) {
+            for (ChatListener l : listeners) {
+                l.onLoginResult(success, errMsg);
+            }
+        }
+
+        /**
+         * Notify listeners that socket was closed by the remote end (server or
+         * Internet error)
+         */
+        private void onDisconnect() {
+            // TODO Step 4: Implement this method
+            // Hint: all the onXXX() methods will be similar to onLoginResult()
+        }
+
+        /**
+         * Notify listeners that server sent us a list of currently connected users
+         *
+         * @param users List with usernames
+         */
+        private void onUsersList(String[] users) {
+            // TODO Step 5: Implement this method
+        }
+
+        /**
+         * Notify listeners that a message is received from the server
+         *
+         * @param priv   When true, this is a private message
+         * @param sender Username of the sender
+         * @param text   Message text
+         */
+        private void onMsgReceived(boolean priv, String sender, String text) {
+            // TODO Step 7: Implement this method
+        }
+
+        /**
+         * Notify listeners that our message was not delivered
+         *
+         * @param errMsg Error description returned by the server
+         */
+        private void onMsgError(String errMsg) {
+            // TODO Step 7: Implement this method
+        }
+
+        /**
+         * Notify listeners that command was not understood by the server.
+         *
+         * @param errMsg Error message
+         */
+        private void onCmdError(String errMsg) {
+            // TODO Step 7: Implement this method
+        }
+
+        /**
+         * Notify listeners that a help response (supported commands) was received
+         * from the server
+         *
+         * @param commands Commands supported by the server
+         */
+        private void onSupported(String[] commands) {
+            // TODO Step 8: Implement this method
         }
     }
-
-    /**
-     * Register a new listener for events (login result, incoming message, etc)
-     *
-     * @param listener
-     */
-    public void addListener(ChatListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
-    }
-
-    /**
-     * Unregister an event listener
-     *
-     * @param listener
-     */
-    public void removeListener(ChatListener listener) {
-        listeners.remove(listener);
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // The following methods are all event-notificators - notify all the listeners about a specific event.
-    // By "event" here we mean "information received from the chat server".
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Notify listeners that login operation is complete (either with success or
-     * failure)
-     *
-     * @param success When true, login successful. When false, it failed
-     * @param errMsg  Error message if any
-     */
-    private void onLoginResult(boolean success, String errMsg) {
-        for (ChatListener l : listeners) {
-            l.onLoginResult(success, errMsg);
-        }
-    }
-
-    /**
-     * Notify listeners that socket was closed by the remote end (server or
-     * Internet error)
-     */
-    private void onDisconnect() {
-        // TODO Step 4: Implement this method
-        // Hint: all the onXXX() methods will be similar to onLoginResult()
-    }
-
-    /**
-     * Notify listeners that server sent us a list of currently connected users
-     *
-     * @param users List with usernames
-     */
-    private void onUsersList(String[] users) {
-        // TODO Step 5: Implement this method
-    }
-
-    /**
-     * Notify listeners that a message is received from the server
-     *
-     * @param priv   When true, this is a private message
-     * @param sender Username of the sender
-     * @param text   Message text
-     */
-    private void onMsgReceived(boolean priv, String sender, String text) {
-        // TODO Step 7: Implement this method
-    }
-
-    /**
-     * Notify listeners that our message was not delivered
-     *
-     * @param errMsg Error description returned by the server
-     */
-    private void onMsgError(String errMsg) {
-        // TODO Step 7: Implement this method
-    }
-
-    /**
-     * Notify listeners that command was not understood by the server.
-     *
-     * @param errMsg Error message
-     */
-    private void onCmdError(String errMsg) {
-        // TODO Step 7: Implement this method
-    }
-
-    /**
-     * Notify listeners that a help response (supported commands) was received
-     * from the server
-     *
-     * @param commands Commands supported by the server
-     */
-    private void onSupported(String[] commands) {
-        // TODO Step 8: Implement this method
-    }
-}
