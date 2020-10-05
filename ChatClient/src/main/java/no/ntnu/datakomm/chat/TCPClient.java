@@ -32,10 +32,8 @@ public class TCPClient {
 
         try{
             connection = new Socket(host, port);
-            OutputStream out = connection.getOutputStream();
-            toServer = new PrintWriter(out,true);
-            InputStream in = connection.getInputStream();
-            fromServer = new BufferedReader(new InputStreamReader(in));
+            toServer = new PrintWriter(connection.getOutputStream(),true);
+            fromServer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             System.out.println("Successfully connected!");
             return true;
         }catch (IOException e){
