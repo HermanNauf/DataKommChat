@@ -1,6 +1,7 @@
 package no.ntnu.datakomm.chat;
 
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.CharacterType;
 
 import java.io.*;
 import java.net.*;
@@ -322,7 +323,15 @@ public class TCPClient {
      * @param text   Message text
      */
     private void onMsgReceived(boolean priv, String sender, String text) {
-        // TODO Step 7: Implement this method
+        TextMessage textMessage = new TextMessage(sender, priv, text);
+        try {
+            for (ChatListener l : listeners) {
+                l.onMessageReceived(textMessage);
+            }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
     }
 
     /**
