@@ -340,7 +340,13 @@ public class TCPClient {
      * @param errMsg Error description returned by the server
      */
     private void onMsgError(String errMsg) {
-        // TODO Step 7: Implement this method
+        try {
+            for (ChatListener l : listeners){
+                l.onMessageError(errMsg);
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
