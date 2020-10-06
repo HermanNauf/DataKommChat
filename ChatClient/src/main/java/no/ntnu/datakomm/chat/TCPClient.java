@@ -129,7 +129,6 @@ public class TCPClient {
      * clear your current user list and use events in the listener.
      */
     public void refreshUserList() {
-        // TODO Step 5: implement this method
         // Hint: Use Wireshark and the provided chat client reference app to find out what commands the
         // client and server exchange for user listing.
         // Sends the command "users" to the sendCommand method
@@ -150,10 +149,16 @@ public class TCPClient {
      */
     public boolean sendPrivateMessage(String recipient, String message) {
         // TODO Step 6: Implement this method
+            if (sendCommand("privmsg " + recipient)) {
+                toServer.println(message);
+                return true;
+            } else {
+                System.out.println("The message was not sent");
+                return false;
+            }
         // Hint: Reuse sendCommand() method
-        // Hint: update lastError if you want to store the reason for the error.
-        return false;
-    }
+    }    // Hint: update lastError if you want to store the reason for the error.
+
 
 
     /**
@@ -171,8 +176,6 @@ public class TCPClient {
      * @return one line of text (one command) received from the server
      */
     private String waitServerResponse() {
-        // TODO Step 3: Implement this method
-        // TODO Step 4: If you get I/O Exception or null from the stream, it means that something has gone wrong
         // with the stream and hence the socket. Probably a good idea to close the socket in that case.
         String answer = "error";
 
@@ -220,7 +223,6 @@ public class TCPClient {
     private void parseIncomingCommands() {
         while (isConnectionActive()) {
 
-            // TODO Step 3: Implement this method
             String[] message = waitServerResponse().split(" ", 2);
             String mess = message[0];
 
@@ -231,16 +233,10 @@ public class TCPClient {
                         break;
                     case "loginerr":
                         onLoginResult(false, "Login unsuccessful");
-
-
-                        // Hint: Reuse waitServerResponse() method
-                        // Hint: Have a switch-case (or other way) to check what type of response is received from the server
-                        // and act on it.
-                        // Hint: In Step 3 you need to handle only login-related responses.
-                        // Hint: In Step 3 reuse onLoginResult() method
-
-                        // TODO Step 5: update this method, handle user-list response from the server
-                        // Hint: In Step 5 reuse onUserList() method
+                        break;
+                    case "users":
+                        onUsersList(message[1].split(" "));
+                        break;
 
                         // TODO Step 7: add support for incoming chat messages from other users (types: msg, privmsg)
                         // TODO Step 7: add support for incoming message errors (type: msgerr)
@@ -301,7 +297,6 @@ public class TCPClient {
      * Internet error)
      */
     private void onDisconnect() {
-        // TODO Step 4: Implement this method
         // Hint: all the onXXX() methods will be similar to onLoginResult()
         for(ChatListener l : listeners){
             l.onDisconnect();
@@ -314,7 +309,6 @@ public class TCPClient {
      * @param users List with usernames
      */
     private void onUsersList(String[] users) {
-        // TODO Step 5: Implement this method
         for(ChatListener l : listeners){
             l.onUserList(users);
         }
