@@ -27,7 +27,7 @@ public class App extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        URL r = getClass().getClassLoader().getResource("/resources/layout.fxml");
+        URL r = getClass().getClassLoader().getResource("layout.fxml");
         Parent root = null;
         try {
             root = FXMLLoader.load(r);
@@ -36,8 +36,7 @@ public class App extends Application {
             return;
         }
         Scene scene = new Scene(root, 600, 400);
-      //  scene.getStylesheets().add("styles/style.css");
-        scene.getStylesheets().add(getClass().getResource("resources/styles/style.css").toExternalForm());
+       scene.getStylesheets().add("styles/style.css");
         primaryStage.setTitle("NTNU Ålesund - ID203012 - ChatClient");
         primaryStage.setScene(scene);
         Image anotherIcon = new Image("styles/ntnu.png");
