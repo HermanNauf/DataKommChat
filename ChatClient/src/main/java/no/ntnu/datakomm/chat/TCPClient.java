@@ -149,9 +149,9 @@ public class TCPClient {
      * @return true if message sent, false on error
      */
     public boolean sendPrivateMessage(String recipient, String message) {
-        // TODO Step 6: Implement this method
+
             if (sendCommand("privmsg " + recipient)) {
-                toServer.println(message);
+                toServer.println(" " + message);
                 return true;
             } else {
                 System.out.println("The message was not sent");
@@ -166,8 +166,10 @@ public class TCPClient {
      * Send a request for the list of commands that server supports.
      */
     public void askSupportedCommands() {
-        // TODO Step 8: Implement this method
         // Hint: Reuse sendCommand() method
+        if(sendCommand("help ")){
+            toServer.println("");
+        }
     }
 
 
@@ -238,18 +240,23 @@ public class TCPClient {
                     case "users":
                         onUsersList(message[1].split(" "));
                         break;
-
-                        // TODO Step 7: add support for incoming chat messages from other users (types: msg, privmsg)
-                        // TODO Step 7: add support for incoming message errors (type: msgerr)
-                        // TODO Step 7: add support for incoming command errors (type: cmderr)
+                    case "msg":
+                        String[] str = message[1].split(" ", 2);
+                        onMsgReceived(false, str[0],str[1]);
+                        break;
+                    case "privmsg":
+                        String[] str1 = message[1].split(" ", 2);
+                        onMsgReceived(true, str1[0],str1[1]);
+                        break;
+                    case "msgerr":
+                        onMsgError(message[1]);
+                        break;
+                    case "cmderr":
+                        onCmdError(message[1]);
+                        break;
                         // Hint for Step 7: call corresponding onXXX() methods which will notify all the listeners
-
-                        // TODO Step 8: add support for incoming supported command list (type: supported)
-
-
-
-
-
+                    case "supported":
+                        onSupported(message[1].split(" ", 2));
                     }
                 }
             }
@@ -355,8 +362,15 @@ public class TCPClient {
      * @param errMsg Error message
      */
     private void onCmdError(String errMsg) {
-        // TODO Step 7: Implement this method
+        try {
+            for (ChatListener l : listeners){
+                l.onCommandError(errMsg);
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
+
 
     /**
      * Notify listeners that a help response (supported commands) was received
@@ -365,6 +379,13 @@ public class TCPClient {
      * @param commands Commands supported by the server
      */
     private void onSupported(String[] commands) {
-        // TODO Step 8: Implement this method
+
+        try{
+            for(ChatListener l : listeners){
+                l.onSupportedCommands(commands);
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 }
