@@ -25,7 +25,6 @@ public class TCPClient {
      * @return True on success, false otherwise
      */
     public boolean connect(String host, int port) {
-        // TODO Step 1: implement this method
         // Hint: Remember to process all exceptions and return false on error
         // Hint: Remember to set up all the necessary input/output stream variables
         System.out.println("Client started...");
@@ -53,7 +52,6 @@ public class TCPClient {
      * that no two threads call this method in parallel.
      */
     public synchronized void disconnect() {
-        // TODO Step 4: implement this method
         // Hint: remember to check if connection is active
         if(isConnectionActive() == true){
             try{
@@ -80,7 +78,6 @@ public class TCPClient {
      * @return true on success, false otherwise
      */
     private boolean sendCommand(String cmd) {
-        // TODO Step 2: Implement this method
         // Hint: Remember to check if connection is active
         if(isConnectionActive()) {
             toServer.print(cmd);
@@ -99,7 +96,6 @@ public class TCPClient {
      * @return true if message sent, false on error
      */
     public boolean sendPublicMessage(String message) {
-        // TODO Step 2: implement this method
         // Hint: Reuse sendCommand() method
         // Hint: update lastError if you want to store the reason for the error.
         if (sendCommand("msg ")) {
@@ -118,7 +114,6 @@ public class TCPClient {
          * @param username Username to use
          */
         public void tryLogin(String username) {
-            // TODO Step 3: implement this method
             // Hint: Reuse sendCommand() method
             if(sendCommand("login ")){
                 toServer.println(username);
