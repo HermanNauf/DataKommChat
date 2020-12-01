@@ -10,7 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-/**
+/** HEI HEI HEI HEI TEST TEST TEST
  * Class representing the main Graphical User Interface (GUI). JavaFX interface.
  */
 public class App extends Application {
