@@ -1,6 +1,6 @@
 package no.ntnu.datakomm.chat;
 
-/**
+/** Fredrik er den kuleste i verden
  * Interface for a listener that can handle events received from the server
  */
 public interface ChatListener {
