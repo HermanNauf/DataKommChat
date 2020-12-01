@@ -10,7 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-/** Fredrik er kul
+/** Fredrik er kul123
  * Class representing the main Graphical User Interface (GUI). JavaFX interface.
  */
 public class App extends Application {
