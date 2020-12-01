@@ -3,7 +3,7 @@ package no.ntnu.datakomm.chat;
 import java.util.Objects;
 
 /**
- * Represents a chat message
+ * Represents a chat message hello
  */
 public class TextMessage {
 
